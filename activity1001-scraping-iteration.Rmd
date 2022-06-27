@@ -1,6 +1,6 @@
 ---
 title: "Activity 10.1 - Iterating"
-author: "Name"
+author: "Jackie Fountain"
 output: github_document
 ---
 
@@ -30,6 +30,10 @@ And, although it is structured (hierarchical/tree based), HTML data is often not
 However, it is not loaded with the tidyverse so you will need to load it separately.
 In the space below, load `{tidyverse}` and `{rvest}`.
 
+```{r load packages}
+library(tidyverse)
+library(rvest)
+```
 
 
 The core functions that you may find useful are:
@@ -79,7 +83,7 @@ Compare this to, for example:
 paths_allowed("http://www.facebook.com")
 ```
 
-Are you able to scrape data from TMDB or facebook?
+Are you able to scrape data from TMDB or facebook? ->Not Facebook
 
 
 
@@ -94,8 +98,27 @@ Use this TMBD page to help you determine the different attributes: `https://www.
 scrape_tmdb <- function(url){
   
   page <- read_html(url)
+
   
-  # Update this part of the function to scrape the appropriate information
+  # Scrape Title
+  title<-page%>%
+    html_node("a")%>%
+    html_text()
+  
+  # Scrape Year
+  year<- page%>%
+       html_node(".release_date") %>%
+       html_text()%>%
+       stringr::str_sub(start=2,end=5)
+    
+  
+  # Scrape Rating
+  rating<-page%>%
+     html_node(".certification")%>%
+     html_text()%>%
+     str_remove_all("\n")
+  
+  
   
   # Scrape TMDB score
   score <- page %>% 
@@ -113,6 +136,10 @@ scrape_tmdb <- function(url){
   )
   
 }
+scrape_tmdb("https://www.themoviedb.org/tv/93405")
+```
+```{r test}
+scrape_tmdb("https://www.themoviedb.org/tv/93405")
 ```
 
 
